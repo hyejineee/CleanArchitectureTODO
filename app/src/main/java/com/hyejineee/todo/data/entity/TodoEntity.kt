@@ -1,4 +1,9 @@
 package com.hyejineee.todo.data.entity
 
-class TodoEntity {
+data class TodoEntity(
+    val id:Long,
+    val title : String,
+    val description :String,
+    var hasCompleted : Boolean
+) {
 }

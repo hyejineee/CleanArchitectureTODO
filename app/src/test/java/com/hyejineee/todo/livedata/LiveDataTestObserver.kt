@@ -19,6 +19,11 @@ class LiveDataTestObserver<T> : Observer<T> {
         var actualNext:Boolean
         var expectNext:Boolean
 
+        println(
+            "비교 - values : ${values}, sequence : ${sequence}"
+        )
+
+
         while(true){
             actualNext = actualIterator.hasNext()
             expectNext = expectedIterator.hasNext()

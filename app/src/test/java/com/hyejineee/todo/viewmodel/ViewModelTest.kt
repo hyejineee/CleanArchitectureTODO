@@ -2,8 +2,8 @@ package com.hyejineee.todo.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import com.hyejineee.todo.DI.appTestModule
 import com.hyejineee.todo.InstantExecutorListener
+import com.hyejineee.todo.di.appTestModule
 import com.hyejineee.todo.livedata.LiveDataTestObserver
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
@@ -19,7 +19,7 @@ import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 
 @ExperimentalCoroutinesApi
-open class ViewModelTest : DescribeSpec(), KoinTest {
+internal abstract class ViewModelTest : DescribeSpec(), KoinTest {
 
     private var context: Application = mockk<Application>()
     private val dispatcher = TestCoroutineDispatcher()
@@ -43,8 +43,12 @@ open class ViewModelTest : DescribeSpec(), KoinTest {
 
     protected fun <T> LiveData<T>.test(): LiveDataTestObserver<T> {
         val testObserver = LiveDataTestObserver<T>()
-        observeForever(testObserver)
+        this.observeForever(testObserver)
         return testObserver
+    }
+
+    protected fun <T> LiveData<T>.removeTest(observer: LiveDataTestObserver<T>){
+        this.removeObserver(observer)
     }
 
 
