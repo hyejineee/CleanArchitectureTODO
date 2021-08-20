@@ -1,4 +1,4 @@
-package com.hyejineee.todo.viewmodel.todo
+package com.hyejineee.todo.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
@@ -19,7 +19,7 @@ import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 
 @ExperimentalCoroutinesApi
-internal class ViewModelTest : DescribeSpec(), KoinTest {
+open class ViewModelTest : DescribeSpec(), KoinTest {
 
     private var context: Application = mockk<Application>()
     private val dispatcher = TestCoroutineDispatcher()
