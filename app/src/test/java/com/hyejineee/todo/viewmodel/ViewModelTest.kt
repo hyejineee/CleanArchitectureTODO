@@ -3,9 +3,11 @@ package com.hyejineee.todo.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import com.hyejineee.todo.Context
+import com.hyejineee.todo.Describe
 import com.hyejineee.todo.InstantExecutorListener
 import com.hyejineee.todo.di.appTestModule
 import com.hyejineee.todo.livedata.LiveDataTestObserver
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
@@ -17,9 +19,14 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.logger.Level
+import org.koin.dsl.koinApplication
 import org.koin.test.KoinTest
+import org.koin.test.KoinTestRule
 
 @ExperimentalCoroutinesApi
 internal abstract class ViewModelTest : DescribeSpec(), KoinTest {
@@ -27,12 +34,12 @@ internal abstract class ViewModelTest : DescribeSpec(), KoinTest {
     private var context: Application = mockk<Application>()
     private val dispatcher = TestCoroutineDispatcher()
 
+
     protected abstract fun initData()
     protected abstract fun removeData()
 
     override fun beforeSpec(spec: Spec) {
         super.beforeSpec(spec)
-
         startKoin {
             androidContext(context)
             modules(appTestModule)
@@ -48,16 +55,21 @@ internal abstract class ViewModelTest : DescribeSpec(), KoinTest {
     }
 
     override fun beforeContainer(testCase: TestCase) {
+
         if (!testCase.config.tags.contains(Context)) {
             return
         }
         super.beforeContainer(testCase)
         initData()
+
     }
 
     override fun afterContainer(testCase: TestCase, result: TestResult) {
-        if (!testCase.config.tags.contains(Context)) return
+        if (!testCase.config.tags.contains(Context)) {
+            return
+        }
         super.afterContainer(testCase, result)
+
         removeData()
     }
 
@@ -67,10 +79,9 @@ internal abstract class ViewModelTest : DescribeSpec(), KoinTest {
         return testObserver
     }
 
-    protected fun <T> LiveData<T>.removeTest(observer: LiveDataTestObserver<T>){
+    protected fun <T> LiveData<T>.removeTest(observer: LiveDataTestObserver<T>) {
         this.removeObserver(observer)
     }
-
 
     init {
         listener(InstantExecutorListener())

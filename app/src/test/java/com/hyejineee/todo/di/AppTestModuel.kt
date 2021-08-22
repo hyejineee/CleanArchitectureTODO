@@ -21,6 +21,7 @@ internal val appTestModule = module {
     factory { UpdateTodoUseCase(get()) }
 
     factory { DeleteTodoListUseCase(get()) }
+    factory { DeleteTodoUseCase(get()) }
 
 
     //repository
@@ -32,7 +33,8 @@ internal val appTestModule = module {
         DetailViewModel(
             detailMode = detailMode,
             id = id,
-            getTodoItemUseCase = get()
+            getTodoItemUseCase = get(),
+            deleteTodoUseCase = get()
         )
     }
 }
