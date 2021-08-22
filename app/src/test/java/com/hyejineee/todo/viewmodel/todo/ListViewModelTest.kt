@@ -28,13 +28,8 @@ import org.koin.test.inject
 @ExperimentalCoroutinesApi
 internal class ListViewModelTest : ViewModelTest() {
 
-    /**
-     * 필요한 유스케이스
-     * 1. insertToDoList
-     * 2. getTodoItem
-     * */
-
     private val viewModel: ListViewModel by inject()
+
     private val insertTodoUseCase: InsertTodoUseCase by inject()
     private val getTodoUseCase: GetTodoUseCase by inject()
     private val deleteTodoListUseCase: DeleteTodoListUseCase by inject()
@@ -43,31 +38,17 @@ internal class ListViewModelTest : ViewModelTest() {
         TodoEntity(
             id = it.toLong(),
             title = "title${it}",
-            description = "decription${it}",
+            description = "description${it}",
             hasCompleted = false
         )
     }
 
-    private fun initData() = runBlockingTest {
+    override fun initData() = runBlockingTest {
         insertTodoUseCase(mockList) // 데이터 초기화
     }
 
-    private fun removeData() = runBlockingTest {
+    override fun removeData() = runBlockingTest {
         deleteTodoListUseCase()
-    }
-
-    override fun beforeContainer(testCase: TestCase) {
-        if (!testCase.config.tags.contains(Context)) {
-            return
-        }
-        super.beforeContainer(testCase)
-        initData()
-    }
-
-    override fun afterContainer(testCase: TestCase, result: TestResult) {
-        if (!testCase.config.tags.contains(Context)) return
-        super.afterContainer(testCase, result)
-        removeData()
     }
 
 

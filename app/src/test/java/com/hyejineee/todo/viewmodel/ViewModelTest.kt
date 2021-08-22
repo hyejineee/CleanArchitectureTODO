@@ -2,11 +2,14 @@ package com.hyejineee.todo.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import com.hyejineee.todo.Context
 import com.hyejineee.todo.InstantExecutorListener
 import com.hyejineee.todo.di.appTestModule
 import com.hyejineee.todo.livedata.LiveDataTestObserver
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,6 +27,9 @@ internal abstract class ViewModelTest : DescribeSpec(), KoinTest {
     private var context: Application = mockk<Application>()
     private val dispatcher = TestCoroutineDispatcher()
 
+    protected abstract fun initData()
+    protected abstract fun removeData()
+
     override fun beforeSpec(spec: Spec) {
         super.beforeSpec(spec)
 
@@ -39,6 +45,20 @@ internal abstract class ViewModelTest : DescribeSpec(), KoinTest {
         super.afterSpec(spec)
         stopKoin()
         Dispatchers.resetMain() // 메인 디스패처를 초기화해줘야 메모리 누수가 발생하지 않는다.
+    }
+
+    override fun beforeContainer(testCase: TestCase) {
+        if (!testCase.config.tags.contains(Context)) {
+            return
+        }
+        super.beforeContainer(testCase)
+        initData()
+    }
+
+    override fun afterContainer(testCase: TestCase, result: TestResult) {
+        if (!testCase.config.tags.contains(Context)) return
+        super.afterContainer(testCase, result)
+        removeData()
     }
 
     protected fun <T> LiveData<T>.test(): LiveDataTestObserver<T> {
