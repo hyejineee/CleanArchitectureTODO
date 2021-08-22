@@ -4,13 +4,11 @@ import com.hyejineee.todo.Context
 import com.hyejineee.todo.data.entity.TodoEntity
 import com.hyejineee.todo.domain.todo.DeleteTodoListUseCase
 import com.hyejineee.todo.domain.todo.GetTodoUseCase
-import com.hyejineee.todo.domain.todo.InsertTodoUseCase
-import com.hyejineee.todo.presentation.list.ListViewModel
-import com.hyejineee.todo.presentation.list.TodoListState
+import com.hyejineee.todo.domain.todo.InsertTodoListUseCase
+import com.hyejineee.todo.presentation.todo.ListViewModel
+import com.hyejineee.todo.presentation.todo.TodoListState
 import com.hyejineee.todo.viewmodel.ViewModelTest
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -30,7 +28,7 @@ internal class ListViewModelTest : ViewModelTest() {
 
     private val viewModel: ListViewModel by inject()
 
-    private val insertTodoUseCase: InsertTodoUseCase by inject()
+    private val insertTodoListUseCase: InsertTodoListUseCase by inject()
     private val getTodoUseCase: GetTodoUseCase by inject()
     private val deleteTodoListUseCase: DeleteTodoListUseCase by inject()
 
@@ -44,7 +42,7 @@ internal class ListViewModelTest : ViewModelTest() {
     }
 
     override fun initData() = runBlockingTest {
-        insertTodoUseCase(mockList) // 데이터 초기화
+        insertTodoListUseCase(mockList) // 데이터 초기화
     }
 
     override fun removeData() = runBlockingTest {

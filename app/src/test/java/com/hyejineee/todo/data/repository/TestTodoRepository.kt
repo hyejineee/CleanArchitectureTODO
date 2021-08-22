@@ -15,6 +15,10 @@ class TestTodoRepository:TodoRepository {
         this.todoList.addAll(todoList)
     }
 
+    override suspend fun insertTodo(todoEntity: TodoEntity) {
+       this.todoList.add(todoEntity)
+    }
+
     override suspend fun updateTodoItem(todoEntity: TodoEntity): Boolean {
         todoList.find { it.id == todoEntity.id }?.run {
             todoList[todoList.indexOf(this)] = todoEntity

@@ -1,4 +1,4 @@
-package com.hyejineee.todo.presentation.list
+package com.hyejineee.todo.presentation.todo
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.hyejineee.todo.data.entity.TodoEntity
 import com.hyejineee.todo.domain.todo.DeleteTodoListUseCase
 import com.hyejineee.todo.domain.todo.GetTodoListUseCase
-import com.hyejineee.todo.domain.todo.InsertTodoUseCase
 import com.hyejineee.todo.domain.todo.UpdateTodoUseCase
+import com.hyejineee.todo.presentation.BaseViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -18,16 +18,16 @@ import kotlinx.coroutines.launch
  * 2. [UpdateToDoUseCase]
  * 3. [DeleteAllToDoUseCase]
  * */
-class ListViewModel(
+internal class ListViewModel(
     private val getTodoListUseCase: GetTodoListUseCase,
     private val updateTodoUseCase: UpdateTodoUseCase,
     private val deleteTodoListUseCase:DeleteTodoListUseCase,
-) : ViewModel() {
+) : BaseViewModel() {
 
     private var _todoListLiveData = MutableLiveData<TodoListState>(TodoListState.UnInitialized)
     val todoListLiveData: LiveData<TodoListState> = _todoListLiveData
 
-    fun fetchData(): Job = viewModelScope.launch {
+    override fun fetchData() = viewModelScope.launch {
         _todoListLiveData.value = TodoListState.Loading
         _todoListLiveData.value = TodoListState.Success(getTodoListUseCase())
     }
