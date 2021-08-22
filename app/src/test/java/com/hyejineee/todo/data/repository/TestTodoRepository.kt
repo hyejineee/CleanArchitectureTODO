@@ -5,7 +5,7 @@ import com.hyejineee.todo.data.repository.TodoRepository
 
 class TestTodoRepository:TodoRepository {
 
-    private val todoList = mutableListOf<TodoEntity>()
+    val todoList = mutableListOf<TodoEntity>()
 
     override suspend fun getTodoList(): List<TodoEntity> {
         return todoList
@@ -13,6 +13,10 @@ class TestTodoRepository:TodoRepository {
 
     override suspend fun insertTodoList(todoList: List<TodoEntity>) {
         this.todoList.addAll(todoList)
+    }
+
+    override suspend fun insertTodo(todoEntity: TodoEntity) {
+       this.todoList.add(todoEntity)
     }
 
     override suspend fun updateTodoItem(todoEntity: TodoEntity): Boolean {
@@ -27,8 +31,14 @@ class TestTodoRepository:TodoRepository {
     }
 
     override suspend fun deleteAll() {
-        println("deleteAll")
         this.todoList.clear()
+    }
+
+    override suspend fun delete(id: Long): Boolean {
+        todoList.find { it.id == id }?.run {
+            todoList.remove(this)
+            return true
+        } ?: return false
     }
 
 
