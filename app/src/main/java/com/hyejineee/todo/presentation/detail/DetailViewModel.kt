@@ -47,20 +47,19 @@ internal class DetailViewModel(
         }
     }
 
-    fun delete(id: Long) = viewModelScope.launch {
-        _todoDetailLiveData.value = TodoDetailState.Loading
-
+    fun deleteToDo() = viewModelScope.launch {
+        _todoDetailLiveData.postValue(TodoDetailState.Loading)
         try {
-            if (deleteTodoUseCase(id)) {
-                _todoDetailLiveData.postValue(TodoDetailState.Delete)
-            } else {
-                _todoDetailLiveData.postValue( TodoDetailState.Error)
-            }
-
+            deleteTodoUseCase(id)
+            _todoDetailLiveData.postValue(TodoDetailState.Delete)
         } catch (e: Exception) {
             e.printStackTrace()
-            _todoDetailLiveData.postValue( TodoDetailState.Error)
+            _todoDetailLiveData.postValue(TodoDetailState.Error)
         }
+    }
+
+    fun setModifyMode() = viewModelScope.launch {
+        _todoDetailLiveData.postValue(TodoDetailState.Modify)
     }
 
     fun writeTodo(title: String, description: String) = viewModelScope.launch {
@@ -98,6 +97,7 @@ internal class DetailViewModel(
                     _todoDetailLiveData.postValue(TodoDetailState.Success(todoEntity))
 
                 }catch (e:Exception){
+                    e.printStackTrace()
                     _todoDetailLiveData.postValue(TodoDetailState.Error)
                 }
 
