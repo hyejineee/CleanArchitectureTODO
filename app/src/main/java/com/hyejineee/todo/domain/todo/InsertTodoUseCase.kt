@@ -8,7 +8,7 @@ class InsertTodoUseCase(
     private val repository: TodoRepository
 ):UseCase {
 
-    suspend operator fun invoke(todoEntity: TodoEntity){
+    suspend operator fun invoke(todoEntity: TodoEntity): Long {
         return repository.insertTodo(todoEntity)
     }
 }

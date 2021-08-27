@@ -2,8 +2,6 @@ package com.hyejineee.todo.viewmodel.todo
 
 import com.hyejineee.todo.Context
 import com.hyejineee.todo.data.entity.TodoEntity
-import com.hyejineee.todo.data.repository.TestTodoRepository
-import com.hyejineee.todo.data.repository.TodoRepository
 import com.hyejineee.todo.domain.todo.DeleteTodoListUseCase
 import com.hyejineee.todo.domain.todo.InsertTodoUseCase
 import com.hyejineee.todo.presentation.detail.DetailMode
@@ -13,6 +11,8 @@ import com.hyejineee.todo.presentation.todo.ListViewModel
 import com.hyejineee.todo.presentation.todo.TodoListState
 import com.hyejineee.todo.viewmodel.ViewModelTest
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.spec.style.scopes.DescribeSpecContainerContext
+import io.kotest.core.test.createTestName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.koin.core.parameter.parametersOf
@@ -59,7 +59,7 @@ internal class DetailViewModelTest : ViewModelTest() {
 
     init {
         runBlockingTest {
-            describe("DetailViewModel") {
+            describe("DetailViewModel for detail mode") {
                 context("when fetchData() is called ").config(tags = setOf(Context)) {
                     it("todo item is posted to liveData") {
                         val testObservable = detailViewModel.todoDetailLiveData.test()
@@ -76,7 +76,7 @@ internal class DetailViewModelTest : ViewModelTest() {
                 }
 
                 context("when delete a todo Item").config(tags = setOf(Context)) {
-                    it("dff") {
+                    it("todoDetail livedata is changed to Delete") {
                         val deleteTestObservable = detailViewModel.todoDetailLiveData.test()
 
                         detailViewModel.delete(id)
@@ -89,7 +89,7 @@ internal class DetailViewModelTest : ViewModelTest() {
                             )
                         )
 
-                         val listTestObservable = listViewModel.todoListLiveData.test()
+                        val listTestObservable = listViewModel.todoListLiveData.test()
                         listViewModel.fetchData()
 
                         listTestObservable.assertValueSequence(
@@ -97,6 +97,33 @@ internal class DetailViewModelTest : ViewModelTest() {
                                 TodoListState.UnInitialized,
                                 TodoListState.Loading,
                                 TodoListState.Success(listOf())
+                            )
+                        )
+                    }
+                }
+
+                context("when title or description is changed").config(tags = setOf(Context)) {
+                    it("todo is updated") {
+                        val testObservable = detailViewModel.todoDetailLiveData.test()
+
+                        val updateTitle = "update title"
+                        val updateDescription = "update description"
+
+                        val updateTodo = todo.copy(
+                            title = updateTitle,
+                            description = updateDescription
+                        )
+
+                        detailViewModel.writeTodo(
+                            title = updateTitle,
+                            description = updateDescription
+                        )
+
+                        testObservable.assertValueSequence(
+                            listOf(
+                                TodoDetailState.UnInitialized,
+                                TodoDetailState.Loading,
+                                TodoDetailState.Success(updateTodo)
                             )
                         )
                     }

@@ -34,7 +34,10 @@ internal val appTestModule = module {
             detailMode = detailMode,
             id = id,
             getTodoItemUseCase = get(),
-            deleteTodoUseCase = get()
+            deleteTodoUseCase = get(),
+            updateTodoUseCase = get(),
+            get()
         )
     }
 }
+

@@ -15,13 +15,14 @@ class TestTodoRepository:TodoRepository {
         this.todoList.addAll(todoList)
     }
 
-    override suspend fun insertTodo(todoEntity: TodoEntity) {
+    override suspend fun insertTodo(todoEntity: TodoEntity): Long {
        this.todoList.add(todoEntity)
+        return todoEntity.id
     }
 
     override suspend fun updateTodoItem(todoEntity: TodoEntity): Boolean {
         todoList.find { it.id == todoEntity.id }?.run {
-            todoList[todoList.indexOf(this)] = todoEntity
+            todoList.set(todoList.indexOf(this), todoEntity)
             return true
         } ?: return false
     }
